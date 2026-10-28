@@ -1,0 +1,463 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minecraft Servers</title>
+
+<style>
+:root {
+  --background: #0c1110;
+  --card: #17211c;
+  --green: #55e68a;
+  --border: #304237;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background: #111b15;
+  padding: 20px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  color: var(--green);
+  font-size: 25px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+nav { display: flex; gap: 20px; }
+nav a { color: white; text-decoration: none; }
+h1 span, h2 span { color: var(--green); }
+
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 35px 20px;
+}
+
+.hero { text-align: center; padding: 40px 10px; }
+h1 { font-size: 38px; }
+p { color: #9baa9f; line-height: 1.6; }
+
+.stats, .servers, .filters, .details-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.stats, .servers { grid-template-columns: repeat(3, 1fr); }
+.filters { grid-template-columns: 2fr 1fr 1fr 1fr; margin: 25px 0; }
+
+.stat, .server-card, .details {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+}
+
+.stat { text-align: center; }
+.stat strong { color: var(--green); font-size: 28px; }
+.stat p { margin-bottom: 0; }
+
+.server-card {
+  position: relative;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+
+.server-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--green);
+  box-shadow: 0 8px 25px #55e68a20;
+}
+
+.server-card h3 {
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+.avatar {
+  background: #294634;
+  width: 55px;
+  height: 55px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  font-size: 27px;
+}
+
+.tag {
+  display: inline-block;
+  background: #294634;
+  color: var(--green);
+  padding: 6px 10px;
+  margin: 5px 5px 5px 0;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.info, .buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.ip, .details-grid div {
+  background: #0e1712;
+  padding: 13px;
+  border-radius: 7px;
+  overflow-wrap: anywhere;
+}
+
+input, select {
+  background: #1b2920;
+  color: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 13px;
+  width: 100%;
+}
+
+button {
+  background: var(--green);
+  color: #092010;
+  border: none;
+  border-radius: 7px;
+  padding: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.buttons button { flex: 1; }
+.secondary { background: #293b30; color: white; }
+
+.details { max-width: 800px; margin: 25px auto; }
+.details-grid { grid-template-columns: 1fr 1fr; margin: 25px 0; }
+.details-grid strong { display: block; color: var(--green); margin-top: 8px; }
+.rating-buttons { display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; }
+.rating-buttons button { background: #293b30; color: #ffdb69; }
+
+nav a, .logo, .server-card h3, button, .tag {
+  display: inline-block;
+  transition: transform 0.25s, color 0.25s, text-shadow 0.25s;
+}
+
+nav a:hover, .logo:hover, .server-card h3:hover {
+  color: var(--green);
+  transform: scale(1.08);
+  text-shadow: 0 0 12px var(--green);
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #55e68a55;
+}
+
+.tag:hover {
+  transform: scale(1.08);
+  background: #386b49;
+}
+
+.server-card h3:hover::after {
+  content: "Натисни, щоб переглянути сервер";
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #0c1110;
+  color: var(--green);
+  border: 1px solid var(--green);
+  padding: 8px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: normal;
+  text-shadow: none;
+  z-index: 5;
+  max-width: 180px;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  border-top: 1px solid var(--border);
+  color: #9baa9f;
+}
+
+@media (max-width: 900px) {
+  .servers { grid-template-columns: repeat(2, 1fr); }
+  .filters { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  header { flex-direction: column; gap: 15px; }
+  .servers, .stats, .filters, .details-grid {
+    grid-template-columns: 1fr;
+  }
+  h1 { font-size: 30px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo" onclick="goHome()">⛏ MC SERVERS</div>
+  <nav>
+    <a href="#home">Головна</a>
+    <a href="#servers">Сервери</a>
+    <a href="#top">Топ серверів</a>
+  </nav>
+</header>
+
+<main id="app"></main>
+
+<footer>Minecraft Servers © 2026 | Навчальний проєкт</footer>
+
+<script>
+const names = [
+  "MineWorld", "CraftLand", "SkyBlock UA", "SurvivalCraft",
+  "PvP Arena", "BlockCity", "MineGalaxy", "HardcoreWorld",
+  "CubeCraft", "DragonMine", "EnderWorld", "PixelCraft",
+  "SkyWars Pro", "MineZone", "CraftEmpire", "NetherLand",
+  "GreenCraft", "UltraMine", "BlockWars", "DiamondWorld"
+];
+
+const modes = ["Survival", "SkyBlock", "PvP", "Anarchy", "MiniGames"];
+const versions = ["1.16.5", "1.18.2", "1.20.1", "1.21", "1.21.4"];
+const icons = ["🌍", "⚔️", "💎", "🏰", "🔥", "🌲"];
+
+const servers = names.map((name, index) => ({
+  id: index + 1,
+  name: name,
+  ip: name.toLowerCase().replaceAll(" ", "") + ".example.net",
+  mode: modes[index % modes.length],
+  version: versions[(index * 3) % versions.length],
+  icon: icons[index % icons.length],
+  online: 80 + (index * 173) % 1900,
+  maxPlayers: 2500,
+  rating: 3.5 + (index * 7 % 15) / 10,
+  description: "Популярний Minecraft сервер з цікавими режимами."
+}));
+
+const app = document.getElementById("app");
+const ratings = JSON.parse(localStorage.getItem("mcRatings") || "{}");
+
+function getRating(server) {
+  const votes = ratings[server.id] || [];
+  const total = votes.reduce((sum, vote) => sum + vote, 0);
+  return ((server.rating * 10 + total) / (10 + votes.length)).toFixed(1);
+}
+
+function copyIP(ip) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(ip)
+      .then(() => alert("IP скопійовано!"))
+      .catch(() => prompt("Скопіюй IP:", ip));
+  } else {
+    prompt("Скопіюй IP:", ip);
+  }
+}
+
+function goHome() {
+  location.hash = "home";
+}
+
+function openServer(id) {
+  location.hash = "server-" + id;
+}
+
+function createCard(server) {
+  return `
+    <div class="server-card">
+      <div class="avatar">${server.icon}</div>
+      <h3 onclick="openServer(${server.id})">${server.name}</h3>
+      <span class="tag">${server.mode}</span>
+      <span class="tag">${server.version}</span>
+      <p>${server.description}</p>
+
+      <div class="info">
+        <span>🟢 ${server.online}/${server.maxPlayers}</span>
+        <span>⭐ ${getRating(server)}/5</span>
+      </div>
+
+      <div class="ip">${server.ip}</div>
+
+      <div class="buttons">
+        <button onclick="copyIP('${server.ip}')">Копіювати IP</button>
+        <button class="secondary" onclick="openServer(${server.id})">
+          Детальніше
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function showHome() {
+  const totalOnline = servers.reduce((sum, server) => sum + server.online, 0);
+
+  app.innerHTML = `
+    <section class="hero">
+      <h1>Знайди свій <span>Minecraft сервер</span></h1>
+      <p>Обирай сервери, порівнюй рейтинги та грай з друзями!</p>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><strong>${servers.length}</strong><p>Серверів</p></div>
+      <div class="stat"><strong>${totalOnline}</strong><p>Гравців онлайн</p></div>
+      <div class="stat"><strong>${modes.length}</strong><p>Режимів гри</p></div>
+    </div>
+
+    <h2 id="servers">Каталог <span>серверів</span></h2>
+
+    <div class="filters">
+      <input id="search" placeholder="🔍 Пошук сервера">
+      <select id="mode">
+        <option value="">Усі режими</option>
+        ${modes.map(mode => `<option>${mode}</option>`).join("")}
+      </select>
+      <select id="version">
+        <option value="">Усі версії</option>
+        ${versions.map(version => `<option>${version}</option>`).join("")}
+      </select>
+      <select id="sort">
+        <option value="rating">За рейтингом</option>
+        <option value="online">За онлайном</option>
+        <option value="name">За назвою</option>
+      </select>
+    </div>
+
+    <p id="count"></p>
+    <div class="servers" id="serverList"></div>
+  `;
+
+  ["search", "mode", "version", "sort"].forEach(id => {
+    const element = document.getElementById(id);
+    element.addEventListener(id === "search" ? "input" : "change", filterServers);
+  });
+
+  filterServers();
+}
+
+function filterServers() {
+  const search = document.getElementById("search").value.toLowerCase();
+  const mode = document.getElementById("mode").value;
+  const version = document.getElementById("version").value;
+  const sort = document.getElementById("sort").value;
+
+  let result = servers.filter(server => {
+    const matchesSearch = server.name.toLowerCase().includes(search) ||
+                          server.ip.includes(search);
+    const matchesMode = !mode || server.mode === mode;
+    const matchesVersion = !version || server.version === version;
+    return matchesSearch && matchesMode && matchesVersion;
+  });
+
+  if (sort === "rating") {
+    result.sort((a, b) => getRating(b) - getRating(a));
+  } else if (sort === "online") {
+    result.sort((a, b) => b.online - a.online);
+  } else {
+    result.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  document.getElementById("count").textContent =
+    "Знайдено серверів: " + result.length;
+
+  document.getElementById("serverList").innerHTML =
+    result.length ? result.map(createCard).join("") : "<p>Серверів не знайдено</p>";
+}
+
+function showServer(id) {
+  const server = servers.find(server => server.id === id);
+  if (!server) {
+    showHome();
+    return;
+  }
+
+  app.innerHTML = `
+    <button class="secondary" onclick="goHome()">← Назад</button>
+    <div class="details">
+      <div class="avatar">${server.icon}</div>
+      <h1>${server.name}</h1>
+      <span class="tag">${server.mode}</span>
+      <span class="tag">${server.version}</span>
+      <p>${server.description}</p>
+
+      <div class="details-grid">
+        <div>IP<strong>${server.ip}</strong></div>
+        <div>Версія<strong>${server.version}</strong></div>
+        <div>Режим<strong>${server.mode}</strong></div>
+        <div>Онлайн<strong>${server.online}/${server.maxPlayers}</strong></div>
+        <div>Рейтинг<strong>⭐ ${getRating(server)}/5</strong></div>
+        <div>Статус<strong>🟢 Демонстраційний</strong></div>
+      </div>
+
+      <button onclick="copyIP('${server.ip}')">📋 Копіювати IP</button>
+
+      <h2>Оціни сервер</h2>
+      <div class="rating-buttons">
+        ${[1, 2, 3, 4, 5].map(number => `
+          <button onclick="rateServer(${server.id}, ${number})">
+            ${number} ⭐
+          </button>
+        `).join("")}
+      </div>
+      <p id="message"></p>
+    </div>
+  `;
+}
+
+function rateServer(id, value) {
+  if (!ratings[id]) ratings[id] = [];
+  ratings[id].push(value);
+  localStorage.setItem("mcRatings", JSON.stringify(ratings));
+
+  showServer(id);
+  document.getElementById("message").textContent = "Оцінку збережено!";
+}
+
+function showTop() {
+  const topServers = [...servers]
+    .sort((a, b) => getRating(b) - getRating(a))
+    .slice(0, 10);
+
+  app.innerHTML = `
+    <h1>🏆 Топ <span>10 серверів</span></h1>
+    <p>Найкращі сервери за рейтингом.</p>
+    <div class="servers">${topServers.map(createCard).join("")}</div>
+  `;
+}
+
+function router() {
+  const page = location.hash.slice(1);
+
+  if (page.startsWith("server-")) {
+    showServer(Number(page.split("-")[1]));
+  } else if (page === "top") {
+    showTop();
+  } else {
+    showHome();
+    if (page === "servers") {
+      document.getElementById("servers").scrollIntoView();
+    }
+  }
+
+  if (page !== "servers") window.scrollTo(0, 0);
+}
+
+window.addEventListener("hashchange", router);
+router();
+</script>
+</body>
+</html>
